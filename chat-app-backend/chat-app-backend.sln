@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chat-app.Domain", "chat-app.Domain\chat-app.Domain.csproj", "{EFA656DD-70B5-4F6C-B957-826E507F8CCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chat-app.Infrastructure", "chat-app.Infrastructure\chat-app.Infrastructure.csproj", "{484CD160-AD9F-41FF-AE46-53DC08CAE21D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chat-app.Application", "chat-app.Application\chat-app.Application.csproj", "{1D7F4762-01B6-4D26-B03C-9495116C4B25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chat-app.WebAPI", "chat-app.WebAPI\chat-app.WebAPI.csproj", "{A998CC1A-764D-4142-BCB1-055C6E7C55B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFA656DD-70B5-4F6C-B957-826E507F8CCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA656DD-70B5-4F6C-B957-826E507F8CCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA656DD-70B5-4F6C-B957-826E507F8CCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA656DD-70B5-4F6C-B957-826E507F8CCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{484CD160-AD9F-41FF-AE46-53DC08CAE21D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{484CD160-AD9F-41FF-AE46-53DC08CAE21D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{484CD160-AD9F-41FF-AE46-53DC08CAE21D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{484CD160-AD9F-41FF-AE46-53DC08CAE21D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D7F4762-01B6-4D26-B03C-9495116C4B25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D7F4762-01B6-4D26-B03C-9495116C4B25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D7F4762-01B6-4D26-B03C-9495116C4B25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D7F4762-01B6-4D26-B03C-9495116C4B25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A998CC1A-764D-4142-BCB1-055C6E7C55B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A998CC1A-764D-4142-BCB1-055C6E7C55B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A998CC1A-764D-4142-BCB1-055C6E7C55B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A998CC1A-764D-4142-BCB1-055C6E7C55B1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
