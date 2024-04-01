@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Message} from '../models/message';
-import * as signalR from "@microsoft/signalr";
+import {HubConnection} from "@microsoft/signalr";
 import {HubConnectionBuilder} from "@microsoft/signalr";
 
 @Injectable({
@@ -15,7 +15,7 @@ export class ChatService {
   private messagesEndpoint = this.backendUrl + 'messages';
   private combinedMessagesEndpoint = this.backendUrl + 'combined';
 
-  private hubConnection!: signalR.HubConnection;
+  private hubConnection!: HubConnection;
 
   constructor(private http: HttpClient) {}
 
