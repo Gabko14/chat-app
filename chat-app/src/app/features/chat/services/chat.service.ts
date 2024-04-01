@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Message} from '../models/message';
-import * as signalR from "@aspnet/signalr";
-import {HubConnectionBuilder} from "@aspnet/signalr";
+import * as signalR from "@microsoft/signalr";
+import {HubConnectionBuilder} from "@microsoft/signalr";
 
 @Injectable({
   providedIn: 'root',
