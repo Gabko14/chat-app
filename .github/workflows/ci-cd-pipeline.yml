@@ -35,10 +35,13 @@ jobs:
         node-version: '20.11.0'
     - name: Install dependencies
       run: npm install
+      working-directory: ./chat-app
     - name: Build
       run: npm run build
+      working-directory: ./chat-app
     - name: Test
       run: npm test
+      working-directory: ./chat-app
       
   deploy:
     runs-on: ubuntu-latest
