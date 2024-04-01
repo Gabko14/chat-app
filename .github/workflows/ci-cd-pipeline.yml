@@ -17,11 +17,11 @@ jobs:
       with:
         dotnet-version: '8.0.101'
     - name: Restore dependencies
-      run: dotnet restore ./chat-app-backend/chat-app-backed.sln
+      run: dotnet restore ./chat-app-backend/chat-app-backend.sln
     - name: Build
-      run: dotnet build ./chat-app-backend/chat-app-backed.sln --no-restore 
+      run: dotnet build ./chat-app-backend/chat-app-backend.sln --no-restore 
     - name: Test
-      run: dotnet test ./chat-app-backend/chat-app-backed.sln --no-build 
+      run: dotnet test ./chat-app-backend/chat-app-backend.sln --no-build 
 
   build-frontend:
     runs-on: ubuntu-latest
