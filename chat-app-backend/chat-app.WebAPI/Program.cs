@@ -2,77 +2,63 @@ using System.Reflection;
 using cha_app.Domain.Interfaces;
 using chat_app.Application.Interfaces;
 using chat_app.Application.Services;
-using chat_app.Infrastructure.Data;
 using chat_app.Infrastructure.Repositories;
 using chat_app.WebApi.Hubs;
-using Microsoft.EntityFrameworkCore;
 
+// Initialize a WebApplication builder
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (connectionString is not null)
-{
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseMySQL(connectionString));
-}
+// Configure the services for the application
+builder.Services.AddEndpointsApiExplorer();  // Enable API explorer
+builder.Services.AddSwaggerGen();  // Enable Swagger generation
+builder.Services.AddControllersWithViews();  // Add the MVC services to DI container
+builder.Services.AddRazorPages();  // Add Razor pages services to DI container
 
-// Service Endpoint
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-builder.Services.AddScoped<IMessageService, MessageService>();
+// Register our services with the DI container
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();  // Register IMessageRepository
+builder.Services.AddScoped<IMessageService, MessageService>();  // Register IMessageService
+builder.Services.AddSignalR();  // Add SignalR services to the DI container
 
-// Add SignalR
-builder.Services.AddSignalR();
-
-// Add Auto Mapper
+// Configure AutoMapper to use profiles defined in the Application assembly
 var applicationAssembly = Assembly.Load("chat-app.Application");
 builder.Services.AddAutoMapper(applicationAssembly);
 
-// Add CORS Config
-builder.Services.AddCors(options =>
+// Set up Kestrel to listen on specific URLs
+builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    options.AddPolicy("CorsPolicy",
-        corsPolicyBuilder => corsPolicyBuilder
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials()
-            .SetIsOriginAllowed((host) => true)); // For development, allow any origin
+    // Bind to port 80 on all network interfaces
+    serverOptions.ListenAnyIP(80);
 });
 
+
+// Configure CORS to allow any origin, method, and header
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", corsPolicyBuilder => corsPolicyBuilder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowed(host => true));
+});
+
+// Build the application.    
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    // Configure CORS
-    app.UseCors("CorsPolicy");
-    
-    // Automatically apply migrations
-    using var scope = app.Services.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.Migrate();
-    
-    // Configure the HTTP request pipeline.
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Configure the HTTP pipeline
+app.UseCors("CorsPolicy");  // Apply CORS policy
+app.UseSwagger();  // Enable Swagger
+app.UseSwaggerUI();  // Enable Swagger UI
+app.UseExceptionHandler("/Home/Error");  // Configure built-in exception handler
+app.UseHsts();  // Add the Hsts middleware
+app.UseHttpsRedirection();  // Add the HTTPS Redirection middleware
+app.UseRouting();  // Add endpoint routing
+app.UseAuthorization();  // Add authorization middleware
 
-app.UseExceptionHandler("/Home/Error");
-app.UseHsts();
-app.UseHttpsRedirection();
-app.UseRouting();
-app.UseAuthorization();
-
+// Configure the routes
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
-
-// Map SignalR hubs
-app.MapHub<ChatHub>("/chathub");
+    pattern: "{controller=Home}/{action=Index}/{id?}");  // Default MVC route
+app.MapRazorPages();  // Map Razor pages
+app.MapHub<ChatHub>("/chathub");  // Map SignalR hubs
 
 app.Run();

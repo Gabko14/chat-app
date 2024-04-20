@@ -9,7 +9,8 @@ import {HubConnectionBuilder} from "@microsoft/signalr";
   providedIn: 'root',
 })
 export class ChatService {
-  private backendUrl = 'https://localhost:7150/';
+  // private backendUrl = 'https://localhost:7150/';
+  private backendUrl = 'http://localhost:5232/';
   private userEndpoint = this.backendUrl + 'user';
   private roleEndpoint = this.backendUrl + 'roles';
   private messagesEndpoint = this.backendUrl + 'messages';
@@ -21,7 +22,7 @@ export class ChatService {
 
   public startConnection = async (): Promise<void> => {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl('https://localhost:7150/chathub') // Adjust the URL to match your server
+      .withUrl(this.backendUrl + 'chathub') // Adjust the URL to match your server
       .build();
 
     try {

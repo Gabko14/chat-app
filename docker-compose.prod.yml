@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ./chat-app-backend
+      dockerfile: Dockerfile
+    ports:
+      - "5232:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+
+  frontend:
+    build:
+      context: ./chat-app
+      dockerfile: Dockerfile
+      args:
+        NGINX_CONF: nginx.prod.conf
+    ports:
+      - "80:80"
