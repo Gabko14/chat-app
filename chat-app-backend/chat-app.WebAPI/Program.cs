@@ -26,8 +26,8 @@ builder.Services.AddAutoMapper(applicationAssembly);
 // Set up Kestrel to listen on specific URLs
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    // Bind to port 80 on all network interfaces
-    serverOptions.ListenAnyIP(80);
+    // Bind to port 5232 on all network interfaces
+    serverOptions.ListenAnyIP(5232);
 });
 
 

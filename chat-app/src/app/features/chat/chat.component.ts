@@ -18,7 +18,9 @@ import {DialogSetUsernameComponent} from "./components/dialog-set-username.compo
         </div>
       </article>
       <input [(ngModel)]="message" type="text" placeholder="Enter message"/>
-      <button (click)="sendMessage(sessionStorage.getItem('userName') ?? 'Guest', this.message)">Send</button>
+      <button (click)="sendMessage(localStorage.getItem('userName') ?? 'Guest', this.message)">Send</button>
+
+      <p>CICD auto Deployment test <span style="font-weight: bolder">THIS SHOULD WORK NOW!!!</span></p>
     </section>
   `,
   styles: [``],
@@ -44,14 +46,14 @@ export class ChatComponent implements OnInit {
       });
     });
 
-    if (sessionStorage.getItem('userName') === null) {
+    if (localStorage.getItem('userName') === null) {
       const dialogRef = this.dialog.open(DialogSetUsernameComponent, {
         data: {newUsername: this.userName},
       });
 
       dialogRef.afterClosed().subscribe((newMessage) => {
         if (newMessage) {
-          sessionStorage.setItem('userName', newMessage);
+          localStorage.setItem('userName', newMessage);
         }
       });
     }
@@ -61,5 +63,5 @@ export class ChatComponent implements OnInit {
     this.signalRService.sendMessage(user, message);
   }
 
-  protected readonly sessionStorage = sessionStorage;
+  protected readonly localStorage = localStorage;
 }
