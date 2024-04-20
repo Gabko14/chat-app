@@ -61,24 +61,37 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build, tag, and push Docker image to Amazon ECR
+    - name: Build, tag, and push Backend Docker image to Amazon ECR
       run: |
-        docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:latest .
-        docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
+        docker build -t ${{ secrets.ECR_REPOSITORY_URI_BACKEND }}:latest -f chat-app-backend/Dockerfile .
+        docker push ${{ secrets.ECR_REPOSITORY_URI_BACKEND }}:latest
+    
+    - name: Build, tag, and push Frontend Docker image to Amazon ECR
+      run: |
+        docker build -t ${{ secrets.ECR_REPOSITORY_URI_FRONTEND }}:latest -f chat-app/Dockerfile .
+        docker push ${{ secrets.ECR_REPOSITORY_URI_FRONTEND }}:latest
 
-    - name: Fill in the new image ID in the ECS task definition
-      id: task-def
+    - name: Update Backend Image in Task Definition
+      id: update-backend
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: ecs-task-definition.json
-        container-name: my-container
-        image: ${{ secrets.ECR_REPOSITORY_URI }}:latest
+        container-name: backend-container
+        image: ${{ secrets.ECR_REPOSITORY_URI_BACKEND }}:latest
+
+    - name: Update Frontend Image in Task Definition
+      id: update-frontend
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ steps.update-backend.outputs.task-definition }}
+        container-name: frontend-container
+        image: ${{ secrets.ECR_REPOSITORY_URI_FRONTEND }}:latest
 
     - name: Deploy Docker image to ECS
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         service: my-service
         cluster: my-cluster
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        task-definition: ${{ steps.update-frontend.outputs.task-definition }}
 
       
