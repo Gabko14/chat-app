@@ -1,46 +1,50 @@
-﻿using cha_app.Domain;
-using cha_app.Domain.Entities;
+﻿using cha_app.Domain.Entities;
 using cha_app.Domain.Interfaces;
-using chat_app.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace chat_app.Infrastructure.Repositories;
 
 // IMessageRepository implementation in the Infrastructure project
-public class MessageRepository(ApplicationDbContext context) : IMessageRepository
+public class MessageRepository : IMessageRepository
 {
+    private static readonly List<Message> Messages = new();
 
     public async Task<IEnumerable<Message>> GetAllMessagesAsync()
     {
-        return await context.Messages.ToListAsync();
+        return await Task.FromResult(Messages);
     }
 
     public async Task<Message?> GetMessageByIdAsync(int messageId)
     {
-        return await context.Messages.FindAsync(messageId);
+        var message = Messages.FirstOrDefault(m => m.MessageId == messageId);
+        return await Task.FromResult(message);
     }
-    
+
     public async Task<Message> PostMessageAsync(Message message)
     {
-        context.Messages.Add(message);
-        await context.SaveChangesAsync();
-        return message;
+        Messages.Add(message);
+        return await Task.FromResult(message);
     }
 
     public async Task UpdateMessageAsync(Message message)
     {
-        context.Messages.Update(message);
-        await context.SaveChangesAsync();
+        var existingMessage = Messages.FirstOrDefault(m => m.MessageId == message.MessageId);
+        if (existingMessage != null)
+        {
+            Messages.Remove(existingMessage);
+            Messages.Add(message);
+        }
+
+        await Task.CompletedTask;
     }
 
     public async Task DeleteMessageAsync(int messageId)
     {
-        var message = await context.Messages.FindAsync(messageId);
+        var message = Messages.FirstOrDefault(m => m.MessageId == messageId);
         if (message != null)
         {
-            context.Messages.Remove(message);
-            await context.SaveChangesAsync();
+            Messages.Remove(message);
         }
-    }
 
+        await Task.CompletedTask;
+    }
 }
