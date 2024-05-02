@@ -4,17 +4,14 @@ import {Observable} from 'rxjs';
 import {Message} from '../models/message';
 import {HubConnection} from "@microsoft/signalr";
 import {HubConnectionBuilder} from "@microsoft/signalr";
+import {environment} from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  // private backendUrl = 'https://localhost:7150/';
-  private backendUrl = 'http://localhost:5232/';
-  private userEndpoint = this.backendUrl + 'user';
-  private roleEndpoint = this.backendUrl + 'roles';
+  private backendUrl = environment.apiUrl;
   private messagesEndpoint = this.backendUrl + 'messages';
-  private combinedMessagesEndpoint = this.backendUrl + 'combined';
 
   private hubConnection!: HubConnection;
 

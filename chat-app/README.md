@@ -10,18 +10,21 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+## Docker
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+production build: ```docker build --no-cache --build-arg NGINX_CONF=nginx.prod.conf --build-arg CONFIGURATION=production -t chatapp-frontend:0.2 .```
 
-## Running unit tests
+production tag: ```docker tag chatapp-frontend:0.2 public.ecr.aws/n1s5i8z7/chatapp-frontend:0.2```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+production build: ```docker push public.ecr.aws/n1s5i8z7/chatapp-frontend:0.2```
 
-## Running end-to-end tests
+## Connect to running ECS container and run command from inside the container
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+aws ecs update-service  --cluster chatapp-fragrate-dns --task-definition chatapp-frontend-taskdefinition-family:2 --service  chatapp-frontend-service-1 --enable-execute-command --desired-count 1
 
-## Further help
+aws ecs execute-command --cluster chatapp-fragrate-dns --task b0913e2a36794a90bc22c5153b33c54f --container chatapp-frontend --interactive --command "sh"
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Deploy Backend to AWS Elastic Beanstalk
+
+install eb cli (google)
+
