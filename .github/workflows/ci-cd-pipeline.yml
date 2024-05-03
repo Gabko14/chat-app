@@ -71,27 +71,11 @@ jobs:
         docker build -t ${{ secrets.ECR_REPOSITORY_URI_FRONTEND }}:latest -f chat-app/Dockerfile .
         docker push ${{ secrets.ECR_REPOSITORY_URI_FRONTEND }}:latest
 
-    - name: Update Backend Image in Task Definition
-      id: update-backend
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ecs-task-definition.json
-        container-name: backend-container
-        image: ${{ secrets.ECR_REPOSITORY_URI_BACKEND }}:latest
+    - name: Redeploy Backend ECS cluster Service
+      run: |
+        aws ecs update-service --cluster chatapp-fragrate-dns --service chatapp-frontend-service-lb --force-new-deployment --no-cli-pager
 
-    - name: Update Frontend Image in Task Definition
-      id: update-frontend
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ${{ steps.update-backend.outputs.task-definition }}
-        container-name: frontend-container
-        image: ${{ secrets.ECR_REPOSITORY_URI_FRONTEND }}:latest
-
-    - name: Deploy Docker image to ECS
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        service: my-service
-        cluster: my-cluster
-        task-definition: ${{ steps.update-frontend.outputs.task-definition }}
-
-      
+    - name: Redeploy Frontend ECS cluster Service
+      run: |
+        aws ecs update-service --cluster chatapp-fragrate-dns --service chatapp-frontend-service-lb --force-new-deployment --no-cli-pager
+        
