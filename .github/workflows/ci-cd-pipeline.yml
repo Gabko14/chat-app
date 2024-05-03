@@ -73,7 +73,7 @@ jobs:
 
     - name: Redeploy Backend ECS cluster Service
       run: |
-        aws ecs update-service --cluster chatapp-fragrate-dns --service chatapp-frontend-service-lb --force-new-deployment --no-cli-pager
+        aws ecs update-service --cluster chatapp-fragrate-dns --service chatapp-service-backend --force-new-deployment --no-cli-pager
 
     - name: Redeploy Frontend ECS cluster Service
       run: |
