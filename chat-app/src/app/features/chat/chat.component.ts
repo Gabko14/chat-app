@@ -1,11 +1,11 @@
 import {CommonModule} from '@angular/common';
 import {Component, OnInit} from '@angular/core';
 import {Store} from "@ngrx/store";
-import {ChatService} from "./services/chat.service";
+import {ChatService} from "./chat.service";
 import {FormsModule} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
-import {Message} from "./models/message";
-import {DialogSetUsernameComponent} from "./components/dialog-set-username.component";
+import {Message} from "./message";
+import {DialogSetUsernameComponent} from "./dialog-set-username.component";
 
 @Component({
   selector: 'app-chat',
@@ -19,8 +19,6 @@ import {DialogSetUsernameComponent} from "./components/dialog-set-username.compo
       </article>
       <input [(ngModel)]="message" type="text" placeholder="Enter message"/>
       <button (click)="sendMessage(localStorage.getItem('userName') ?? 'Guest', this.message)">Send</button>
-
-      <p>CICD auto Deployment test <span style="font-weight: bolder">THIS SHOULD WORK NOW!!!</span></p>
     </section>
   `,
   styles: [``],

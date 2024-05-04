@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Message} from '../models/message';
+import {Message} from './message';
 import {HubConnection} from "@microsoft/signalr";
 import {HubConnectionBuilder} from "@microsoft/signalr";
-import {environment} from "../../../../environments/environment";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root',
