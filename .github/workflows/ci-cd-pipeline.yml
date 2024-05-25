@@ -85,16 +85,9 @@ jobs:
         docker tag chatapp-backend:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         cd ..
-      # run: |
-      #   cd chat-app-backend
-      #   docker build --no-cache -t chatapp-backend:latest .
-      #   docker tag chatapp-backend:latest ${{ secrets.ECR_REPOSITORY_URI_BACKEND }}:latest
-      #   docker push ${{ secrets.ECR_REPOSITORY_URI_BACKEND }}:latest
-      #   cd ..
     
     - name: Build, tag, and push Frontend Docker image to Amazon ECR
       env:
-        # ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REGISTRY: 905418279116.dkr.ecr.us-east-1.amazonaws.com
         ECR_REPOSITORY: chatapp-frontend
         IMAGE_TAG: latest
@@ -104,12 +97,6 @@ jobs:
         docker tag chatapp-frontend:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         cd ..
-      # run: |
-      #   cd chat-app
-      #   docker build --no-cache --build-arg NGINX_CONF=nginx.prod.conf --build-arg CONFIGURATION=production -t chatapp-frontend:latest .
-      #   docker tag chatapp-frontend:latest ${{ secrets.ECR_REPOSITORY_URI_FRONTEND }}:latest
-      #   docker push ${{ secrets.ECR_REPOSITORY_URI_FRONTEND }}:latest
-      #   cd ..
 
     - name: Redeploy Backend ECS cluster Service
       run: |

@@ -3,35 +3,34 @@ using cha_app.Domain.Interfaces;
 
 namespace chat_app.Infrastructure.Repositories;
 
-// IMessageRepository implementation in the Infrastructure project
 public class MessageRepository : IMessageRepository
 {
-    private static readonly List<Message> Messages = new();
+    private readonly List<Message> _messages = new();
 
     public async Task<IEnumerable<Message>> GetAllMessagesAsync()
     {
-        return await Task.FromResult(Messages);
+        return await Task.FromResult(_messages);
     }
 
     public async Task<Message?> GetMessageByIdAsync(int messageId)
     {
-        var message = Messages.FirstOrDefault(m => m.MessageId == messageId);
+        var message = _messages.FirstOrDefault(m => m.MessageId == messageId);
         return await Task.FromResult(message);
     }
 
     public async Task<Message> PostMessageAsync(Message message)
     {
-        Messages.Add(message);
+        _messages.Add(message);
         return await Task.FromResult(message);
     }
 
     public async Task UpdateMessageAsync(Message message)
     {
-        var existingMessage = Messages.FirstOrDefault(m => m.MessageId == message.MessageId);
+        var existingMessage = _messages.FirstOrDefault(m => m.MessageId == message.MessageId);
         if (existingMessage != null)
         {
-            Messages.Remove(existingMessage);
-            Messages.Add(message);
+            _messages.Remove(existingMessage);
+            _messages.Add(message);
         }
 
         await Task.CompletedTask;
@@ -39,10 +38,10 @@ public class MessageRepository : IMessageRepository
 
     public async Task DeleteMessageAsync(int messageId)
     {
-        var message = Messages.FirstOrDefault(m => m.MessageId == messageId);
+        var message = _messages.FirstOrDefault(m => m.MessageId == messageId);
         if (message != null)
         {
-            Messages.Remove(message);
+            _messages.Remove(message);
         }
 
         await Task.CompletedTask;

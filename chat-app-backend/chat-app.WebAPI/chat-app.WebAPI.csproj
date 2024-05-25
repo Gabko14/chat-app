@@ -26,4 +26,8 @@
       <ProjectReference Include="..\chat-app.Infrastructure\chat-app.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="chat-app-serviceAccountKey.json" />
+    </ItemGroup>
+
 </Project>
