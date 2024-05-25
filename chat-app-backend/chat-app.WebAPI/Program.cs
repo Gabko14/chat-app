@@ -2,8 +2,11 @@ using System.Reflection;
 using cha_app.Domain.Interfaces;
 using chat_app.Application.Interfaces;
 using chat_app.Application.Services;
+using chat_app.Infrastructure;
 using chat_app.Infrastructure.Repositories;
 using chat_app.WebApi.Hubs;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 
 // Initialize a WebApplication builder
 var builder = WebApplication.CreateBuilder(args);
@@ -15,8 +18,9 @@ builder.Services.AddControllersWithViews();  // Add the MVC services to DI conta
 builder.Services.AddRazorPages();  // Add Razor pages services to DI container
 
 // Register our services with the DI container
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();  // Register IMessageRepository
+builder.Services.AddSingleton<IMessageRepository, MessageRepository>();  // Register IMessageRepository
 builder.Services.AddScoped<IMessageService, MessageService>();  // Register IMessageService
+builder.Services.AddScoped<INotificationService, NotificationService>();  // Register IMessageService
 builder.Services.AddSignalR();  // Add SignalR services to the DI container
 
 // Configure AutoMapper to use profiles defined in the Application assembly
@@ -53,6 +57,23 @@ app.UseHsts();  // Add the Hsts middleware
 app.UseHttpsRedirection();  // Add the HTTPS Redirection middleware
 app.UseRouting();  // Add endpoint routing
 app.UseAuthorization();  // Add authorization middleware
+
+if (!app.Environment.IsDevelopment())
+{
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = GoogleCredential.FromJson(System.Environment.GetEnvironmentVariable("GOOGLEAPI_ACCKEY_JSON")),
+    });
+}
+else
+{
+    FirebaseApp.Create(new AppOptions()
+    {
+        // TODO This is a temporary fix for development purposes and it should be changed bcs of security risks:
+        // (https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-8.0&tabs=windows)
+        Credential = GoogleCredential.FromFile("./chat-app-serviceAccountKey.json"),
+    });
+}
 
 // Configure the routes
 app.MapControllerRoute(

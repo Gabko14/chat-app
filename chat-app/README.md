@@ -24,7 +24,13 @@ aws ecs update-service  --cluster chatapp-fragrate-dns --task-definition chatapp
 
 aws ecs execute-command --cluster chatapp-fragrate-dns --task b0913e2a36794a90bc22c5153b33c54f --container chatapp-frontend --interactive --command "sh"
 
-## Deploy Backend to AWS Elastic Beanstalk
+## Test Service Workers locally
 
-install eb cli (google)
+```shell
+ng build --configuration production
+```
+```shell
+npx http-server -p 4200 -c-1 ./dist/chat-app/browser/ 
+```
+
 

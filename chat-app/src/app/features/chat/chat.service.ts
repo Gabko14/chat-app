@@ -2,8 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Message} from './message';
-import {HubConnection} from "@microsoft/signalr";
-import {HubConnectionBuilder} from "@microsoft/signalr";
+import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
 import {environment} from "../../../environments/environment";
 
 @Injectable({
@@ -25,9 +24,8 @@ export class ChatService {
     try {
       await this.hubConnection
         .start();
-      return console.log('Connection started');
     } catch (err) {
-      return console.log('Error while starting connection: ' + err);
+      return console.error('Error while starting connection: ' + err);
     }
   };
 
