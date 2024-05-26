@@ -1,16 +1,15 @@
 import {CommonModule} from '@angular/common';
 import {ChatService} from "./chat.service";
 import {FormsModule} from "@angular/forms";
-import {MatDialog} from "@angular/material/dialog";
 import {Message} from "./message";
-import {DialogSetUsernameComponent} from "./dialog-set-username.component";
 import {NotificationService} from "../../shared/notification.service";
 import {MatButton} from "@angular/material/button";
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
-import {Subject, takeUntil} from "rxjs";
+import {map, mergeMap, ReplaySubject, switchMap, takeUntil} from "rxjs";
 import {getToken, Messaging} from "@angular/fire/messaging";
 import {PermissionService} from "../../shared/permission.service";
+import {AuthService} from "../auth/auth.service";
 
 @Component({
   selector: 'app-chat',
@@ -40,41 +39,39 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   protected messages: Message[] = [];
   protected userInputMessage: string = '';
+  protected areChatNotificationsReady: boolean = false;
+  private readonly destroyed = new ReplaySubject<void>();
 
-  private destroy$ = new Subject<void>();
-
-  protected areChatNotificationsReady: boolean = this.permissionService.areNotificationsGranted() && localStorage.getItem("fcmRegistrationToken") != null;
-
-  constructor(private dialog: MatDialog,
-              private signalRService: ChatService,
-              private notificationService: NotificationService,
-              private messaging: Messaging,
-              private matSnackBar: MatSnackBar,
-              private permissionService: PermissionService) {
+  constructor(private readonly signalRService: ChatService,
+              private readonly notificationService: NotificationService,
+              private readonly messaging: Messaging,
+              private readonly matSnackBar: MatSnackBar,
+              private readonly permissionService: PermissionService,
+              private readonly authSercice: AuthService) {
   }
 
   ngOnInit() {
-    this.signalRService.getAllMessages().pipe(takeUntil(this.destroy$)).subscribe((messages) => {
+    this.initializeChat()
+    this.authSercice.login()
+    this.areChatNotificationsReady = this.permissionService.areNotificationsGranted() && localStorage.getItem("fcmRegistrationToken") != null
+  }
+
+  private initializeChat() {
+
+    this.signalRService.getAllMessages().pipe(takeUntil(this.destroyed)).subscribe((messages) => {
       this.messages = messages
     })
 
-    this.signalRService.startConnection().then(() => {
-      this.signalRService.receiveMessage((user, message) => {
-        this.messages.push({sender: user, content: message});
-      });
-    });
-
-    if (localStorage.getItem('userName') === null) {
-      const dialogRef = this.dialog.open(DialogSetUsernameComponent, {
-        data: {newUsername: ""},
-      });
-
-      dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((newMessage) => {
-        if (newMessage) {
-          localStorage.setItem('userName', newMessage);
-        }
-      });
-    }
+    this.signalRService.startConnection().pipe(
+      takeUntil(this.destroyed),
+      mergeMap(() => {
+        return this.signalRService.receiveMessage().pipe(
+          map(message => {
+            this.messages.push({sender: message.user, content: message.message});
+          })
+        )
+      })
+    ).subscribe()
   }
 
   protected subscribeToNotifications() {
@@ -90,7 +87,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         ).then(
           (currentToken) => {
             this.notificationService.addPushSubscriber(currentToken)
-              .pipe(takeUntil(this.destroy$))
+              .pipe(takeUntil(this.destroyed))
               .subscribe()
             this.matSnackBar.open("You subscribed to Notifications!", "Ok", {duration: 2000})
             this.areChatNotificationsReady = true;
@@ -110,15 +107,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     );
   }
 
-
   protected sendMessage(user: string, message: string) {
-    this.signalRService.sendMessage(user, message).then(() => {
-      this.notificationService.sendToEveryone({
-          title: user,
-          body: message
-        } as Notification
-      ).pipe(takeUntil(this.destroy$)).subscribe();
-    });
+    this.signalRService.sendMessage(user, message).pipe(
+      takeUntil(this.destroyed),
+      switchMap(() => {
+        // TODO Setup an event base architecture in the backend for this
+          return this.notificationService.sendToEveryone({
+              title: user,
+              body: message
+            } as Notification
+          )
+        }
+      )
+    ).subscribe()
   }
 
   protected getUsername() {
@@ -126,7 +127,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 }
