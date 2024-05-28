@@ -1,30 +1,28 @@
-import { Component, Inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Component, Inject } from "@angular/core"
+import { FormsModule } from "@angular/forms"
+import { MatButtonModule } from "@angular/material/button"
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog"
+import { MatFormFieldModule } from "@angular/material/form-field"
+import { MatInputModule } from "@angular/material/input"
+import { MatSnackBarModule } from "@angular/material/snack-bar"
 
 @Component({
-  selector: 'app-dialog-username',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    MatDialogModule,
-  ],
-  template: `
+	selector: "app-dialog-username",
+	standalone: true,
+	imports: [
+		MatFormFieldModule,
+		MatInputModule,
+		FormsModule,
+		MatButtonModule,
+		MatDialogModule,
+		MatSnackBarModule,
+	],
+	template: `
     <h2 mat-dialog-title>Set Username</h2>
     <mat-dialog-content>
       <mat-form-field>
         <mat-label>New Username</mat-label>
-        <input matInput [(ngModel)]="data.newName" />
+        <input matInput [(ngModel)]="data.newName"/>
       </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions>
@@ -36,12 +34,12 @@ import { MatInputModule } from '@angular/material/input';
   `,
 })
 export class DialogSetUsernameComponent {
-  constructor(
-    public dialogRef: MatDialogRef<DialogSetUsernameComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+	constructor(
+		public dialogRef: MatDialogRef<DialogSetUsernameComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: { newName: string }
+	) {}
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
+	onNoClick(): void {
+		this.dialogRef.close()
+	}
 }

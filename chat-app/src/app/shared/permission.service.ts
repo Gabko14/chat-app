@@ -1,15 +1,12 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from "@angular/core"
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: "root",
 })
 export class PermissionService {
+	constructor() {}
 
-  constructor() {
-  }
-
-  public areNotificationsGranted() {
-    return Notification.permission == "granted"
-  }
+	public areNotificationsGranted() {
+		return Notification.permission == "granted"
+	}
 }
-
