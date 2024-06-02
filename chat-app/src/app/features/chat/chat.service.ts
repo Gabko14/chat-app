@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { HttpClient, HttpErrorResponse } from "@angular/common/http"
 import { catchError, from, fromEventPattern, Observable, retry, throwError } from "rxjs"
-import { Message } from "./message"
+import { Message } from "./message.type"
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr"
 import { environment } from "../../../environments/environment"
 import { MatSnackBar } from "@angular/material/snack-bar"
@@ -58,7 +58,7 @@ export class ChatService {
 	public getAllMessages(): Observable<Message[]> {
 		return this.http
 			.get<Message[]>(this.messagesEndpoint)
-			.pipe(retry(), catchError(this.handleHttpError))
+			.pipe(retry(1), catchError(this.handleHttpError))
 	}
 
 	// TODO Verlagern in eine Error handling klasse/service
