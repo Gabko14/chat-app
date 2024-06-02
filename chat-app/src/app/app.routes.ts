@@ -1,10 +1,10 @@
 import { Routes } from "@angular/router"
-import { ChatComponent } from "./features/chat/chat.component"
+import { ChatContainer } from "./features/chat/chat.container"
 
 export const routes: Routes = [
 	{
 		path: "",
-		component: ChatComponent,
+		component: ChatContainer,
 		title: "Chat",
 	},
 	{

@@ -28,6 +28,10 @@ export class AuthService implements OnDestroy {
 		}
 	}
 
+	public getUsername() {
+		return localStorage.getItem("userName")
+	}
+
 	ngOnDestroy() {
 		this.destroyed.next()
 		this.destroyed.complete()
