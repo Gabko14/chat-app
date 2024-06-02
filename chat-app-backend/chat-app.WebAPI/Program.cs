@@ -22,6 +22,7 @@ builder.Services.AddSingleton<IMessageRepository, MessageRepository>();  // Regi
 builder.Services.AddScoped<IMessageService, MessageService>();  // Register IMessageService
 builder.Services.AddScoped<INotificationService, NotificationService>();  // Register IMessageService
 builder.Services.AddSignalR();  // Add SignalR services to the DI container
+builder.Services.AddHealthChecks(); // Needed for AWS to make Health checks
 
 // Configure AutoMapper to use profiles defined in the Application assembly
 var applicationAssembly = Assembly.Load("chat-app.Application");
@@ -81,5 +82,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");  // Default MVC route
 app.MapRazorPages();  // Map Razor pages
 app.MapHub<ChatHub>("/chathub");  // Map SignalR hubs
+
+app.MapHealthChecks("/healthcheck"); // Needed for AWS to make Health checks
 
 app.Run();
