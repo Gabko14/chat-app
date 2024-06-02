@@ -23,6 +23,7 @@ import { MessagesViewComponent } from "./messages-view/messages-view.component"
 	template: `
     <header class="flex justify-between gap-2 p-2 sticky top-0 w-full bg-white max-h-fit">
       <strong class="content-center text-2xl">ChatApp</strong>
+			<button mat-raised-button (click)="localStorage.removeItem('fcmRegistrationToken')">Reset subscription</button>
       <div class="flex items-center gap-2">
         @if (newestVersionAvailable) {
           <button mat-icon-button class="hover:bg-blue-500 hover:bg-opacity-10" (click)="updateToNewestVersion()">
