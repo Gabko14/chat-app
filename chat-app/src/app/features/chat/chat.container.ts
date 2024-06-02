@@ -5,7 +5,7 @@ import { Message } from "./message.type"
 import { NotificationService } from "../../shared/notification.service"
 import { MatButton, MatFabButton, MatIconButton, MatMiniFabButton } from "@angular/material/button"
 import { Component, OnDestroy, OnInit, signal } from "@angular/core"
-import { filter, map, mergeMap, ReplaySubject, switchMap, takeUntil, window } from "rxjs"
+import { filter, map, mergeMap, ReplaySubject, takeUntil, window } from "rxjs"
 import { PermissionService } from "../../shared/permission.service"
 import { AuthService } from "../auth/auth.service"
 import { MatIcon } from "@angular/material/icon"
@@ -89,11 +89,6 @@ export class ChatContainer implements OnInit, OnDestroy {
 		this.authSercice.login()
 	}
 
-	// TODO remove
-	protected isPushNotificationSupported() {
-		return "serviceWorker" in navigator && "PushManager" in window
-	}
-
 	private initializeChat() {
 		this.signalRService
 			.getAllMessages()
@@ -118,19 +113,7 @@ export class ChatContainer implements OnInit, OnDestroy {
 	}
 
 	protected sendMessage(user: string, message: string) {
-		this.signalRService
-			.sendMessage(user, message)
-			.pipe(
-				takeUntil(this.destroyed),
-				switchMap(() => {
-					// TODO Setup an event base architecture in the backend for this
-					return this.notificationService.sendToEveryone({
-						title: user,
-						body: message,
-					} as Notification)
-				})
-			)
-			.subscribe()
+		this.signalRService.sendMessage(user, message).pipe(takeUntil(this.destroyed)).subscribe()
 	}
 
 	protected updateToNewestVersion() {

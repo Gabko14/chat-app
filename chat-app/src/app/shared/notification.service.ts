@@ -34,8 +34,7 @@ export class NotificationService implements OnDestroy {
 	public subscribeToNotifications() {
 		navigator.serviceWorker.getRegistration("./ngsw-worker.js").then((registration) => {
 			getToken(this.messaging, {
-				vapidKey:
-					"BM2criD6hTHh6lIBOBhMeFwJd_2mH25gPgeB89Zt5naafhPrdfiA3T7VoXWDNDExLnWvHP47kbEPIx_u5CBh5b0", // Get your own vapid key
+				vapidKey: environment.vapidKey,
 				serviceWorkerRegistration: registration,
 			})
 				.then((currentToken) => {
@@ -86,17 +85,6 @@ export class NotificationService implements OnDestroy {
 			.post(this.notificationsEndpoint + "/add-subscriber", null, {
 				params: { fcmRegistrationToken },
 			})
-			.pipe(
-				catchError((error) => {
-					this.httpErrorHandlerService.handleHttpError()
-					return of(error)
-				})
-			)
-	}
-
-	public sendToEveryone(notification: Notification) {
-		return this.http
-			.post(this.notificationsEndpoint + "/send-everyone-notification", notification)
 			.pipe(
 				catchError((error) => {
 					this.httpErrorHandlerService.handleHttpError()

@@ -9,7 +9,7 @@ import { MatDialog } from "@angular/material/dialog"
 export class AuthService implements OnDestroy {
 	private readonly destroyed = new ReplaySubject<void>()
 
-	constructor(private dialog: MatDialog) {}
+	constructor(private readonly dialog: MatDialog) {}
 
 	public login() {
 		if (localStorage.getItem("userName") === null) {
