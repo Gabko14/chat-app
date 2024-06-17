@@ -1,24 +1,35 @@
-﻿using chat_app.Application.Interfaces;
+﻿using cha_app.Domain.Entities;
+using chat_app.Application.Interfaces;
+using chat_app.Infrastructure.Data;
 using FirebaseAdmin.Messaging;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+using Message = FirebaseAdmin.Messaging.Message;
 
 namespace chat_app.Infrastructure;
 
 public class NotificationService : INotificationService
 {
-    // TODO This is temporary until a db exists
-    private static readonly List<string> Subscriptions = new();
+    private readonly IMongoCollection<Subscriber> _database;
+
+    public NotificationService(IOptions<MongoDbSettings> options)
+    {
+        var client = new MongoClient(options.Value.ConnectionString);
+        _database = client.GetDatabase(options.Value.DatabaseName)
+            .GetCollection<Subscriber>(options.Value.NotificationSubscribersCollectionName);
+    }
 
     public async Task SendNotificationToEveryone(Notification notification)
     {
-        // For parallel processing
         var tasks = new List<Task>();
+        var subscribers = await _database.Find(_ => true).ToListAsync();
 
-        foreach (string sub in Subscriptions)
+        foreach (Subscriber sub in subscribers)
         {
             Message message = new Message()
             {
                 Notification = notification,
-                Token = sub,
+                Token = sub.Token,
             };
             tasks.Add(SendNotificationAsync(message));
         }
@@ -33,6 +44,11 @@ public class NotificationService : INotificationService
         }
     }
 
+    public async Task AddPushSubscriber(string sub)
+    {
+        await _database.InsertOneAsync(new Subscriber {Token = sub});
+        await Task.CompletedTask;
+    }
 
     private async Task SendNotificationAsync(Message message)
     {
@@ -44,11 +60,5 @@ public class NotificationService : INotificationService
         {
             Console.WriteLine(ex);
         }
-    }
-
-    public Task AddPushSubscriber(string sub)
-    {
-        Subscriptions.Add(sub);
-        return Task.CompletedTask;
     }
 }

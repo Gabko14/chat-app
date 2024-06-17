@@ -3,6 +3,7 @@ using cha_app.Domain.Interfaces;
 using chat_app.Application.Interfaces;
 using chat_app.Application.Services;
 using chat_app.Infrastructure;
+using chat_app.Infrastructure.Data;
 using chat_app.Infrastructure.Repositories;
 using chat_app.WebApi.Hubs;
 using FirebaseAdmin;
@@ -18,6 +19,7 @@ builder.Services.AddControllersWithViews();  // Add the MVC services to DI conta
 builder.Services.AddRazorPages();  // Add Razor pages services to DI container
 
 // Register our services with the DI container
+builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("ChatAppDatabaseSettings")); // Map MongoDb Settings to Options Object
 builder.Services.AddSingleton<IMessageRepository, MessageRepository>();  // Register IMessageRepository
 builder.Services.AddScoped<IMessageService, MessageService>();  // Register IMessageService
 builder.Services.AddScoped<INotificationService, NotificationService>();  // Register IMessageService

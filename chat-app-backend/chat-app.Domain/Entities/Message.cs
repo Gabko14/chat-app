@@ -1,17 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace cha_app.Domain.Entities;
 
 public class Message
 {
-    public int MessageId { get; set; }
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public ObjectId MessageId { get; set; }
     
-    [StringLength(64, MinimumLength = 1)] 
+    [BsonElement("content")]
     public required string Content { get; set; }
     
-    
-    public DateTime Timestamp { get; set; }
-    
-    [StringLength(64, MinimumLength = 1)] 
+    [BsonElement("sender")]
     public required string Sender { get; set; }
+    
+    [BsonElement("timestamp")]
+    public DateTime Timestamp { get; set; }
 }

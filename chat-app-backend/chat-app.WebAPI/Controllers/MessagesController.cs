@@ -1,6 +1,9 @@
-﻿using chat_app.Application.DTOs;
+﻿using System.Net;
+using Amazon.Runtime.Internal;
+using chat_app.Application.DTOs;
 using chat_app.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace chat_app.WebApi.Controllers;
 
@@ -18,7 +21,7 @@ public class MessagesController(IMessageService messageService) : ControllerBase
     }
 
     [HttpGet("{messageId}")]
-    public async Task<ActionResult<MessageReadDto>> GetMessageById(int messageId)
+    public async Task<ActionResult<MessageReadDto>> GetMessageById(string messageId)
     {
         var message = await messageService.GetMessageByIdAsync(messageId);
         if (message == null) return NotFound();
@@ -33,7 +36,7 @@ public class MessagesController(IMessageService messageService) : ControllerBase
     }
     
     [HttpPut("{messageId}")]
-    public async Task<IActionResult> UpdateMessage(int messageId, [FromBody] MessageUpdateDto message)
+    public async Task<IActionResult> UpdateMessage(string messageId, [FromBody] MessageUpdateDto message)
     {
         try
         {
@@ -48,7 +51,7 @@ public class MessagesController(IMessageService messageService) : ControllerBase
     }
 
     [HttpDelete("{messageId}")]
-    public async Task<IActionResult> DeleteMessage(int messageId)
+    public async Task<IActionResult> DeleteMessage(string messageId)
     {
         try
         {
