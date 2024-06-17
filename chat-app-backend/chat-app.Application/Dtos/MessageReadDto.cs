@@ -2,7 +2,7 @@
 
 public class MessageReadDto
 {
-    public int MessageId { get; set; }
+    public string MessageId { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
     public DateTime Timestamp { get; set; }
     public string Sender { get; set; } = string.Empty;

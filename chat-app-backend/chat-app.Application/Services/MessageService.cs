@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using cha_app.Domain.Entities;
 using cha_app.Domain.Interfaces;
 using chat_app.Application.DTOs;
@@ -24,23 +25,22 @@ public class MessageService(IMessageRepository messageRepository, IMapper mapper
         return mapper.Map<IEnumerable<MessageReadDto>>(messages);
     }
 
-    public async Task<MessageReadDto?> GetMessageByIdAsync(int messageId)
+    public async Task<MessageReadDto?> GetMessageByIdAsync(string messageId)
     {
         var message = await messageRepository.GetMessageByIdAsync(messageId);
         return mapper.Map<MessageReadDto>(message);
     }
 
-    public async Task UpdateMessageAsync(int messageId, MessageUpdateDto updateDto)
+    public async Task UpdateMessageAsync(string messageId, MessageUpdateDto updateDto)
     {
         var existingMessage = await messageRepository.GetMessageByIdAsync(messageId);
         if (existingMessage == null) throw new KeyNotFoundException($"Message with id: {messageId} not found.");
-        
         var updatedMessage = mapper.Map(updateDto, existingMessage);
         
         await messageRepository.UpdateMessageAsync(updatedMessage);
     }
 
-    public async Task DeleteMessageAsync(int messageId)
+    public async Task DeleteMessageAsync(string messageId)
     {
         await messageRepository.DeleteMessageAsync(messageId);
     }
